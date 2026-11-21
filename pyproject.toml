@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "stc5g"
+version = "1.0.0"
+description = "Streaming-service traffic classification in a 5G SDN testbed: dataset construction from pcaps, an LSTM classifier and a real-time Ryu controller."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scikit-learn>=1.3",
+    "torch>=2.2",
+    "matplotlib>=3.8",
+    "seaborn>=0.13",
+]
+
+[project.optional-dependencies]
+controller = [
+    "ryu==4.34; python_version < '3.10'",
+    "eventlet==0.30.2; python_version < '3.10'",
+    "setuptools==58.2.0; python_version < '3.10'",
+]
+dev = ["ruff>=0.6"]
+
+[project.scripts]
+stc5g = "stc5g.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/stc5g"]
+
+[tool.uv]
+# Ryu 4.34's setup.py hooks rely on setuptools APIs removed after 58.x.
+build-constraint-dependencies = ["setuptools==58.2.0"]
+
+# Static metadata for the Ryu sdist so the lock file can be resolved from any Python
+# version without building Ryu (it only builds on Python 3.9).
+[[tool.uv.dependency-metadata]]
+name = "ryu"
+version = "4.34"
+requires-dist = [
+    "eventlet>=0.18.2,!=0.18.3,!=0.20.1,!=0.21.0,!=0.23.0",
+    "msgpack>=0.3.0",
+    "netaddr",
+    "oslo.config>=2.5.0",
+    "ovs>=2.6.0",
+    "routes",
+    "six>=1.4.0",
+    "tinyrpc",
+    "webob>=1.2",
+]
+
+[tool.ruff]
+line-length = 110
+target-version = "py39"
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E501", "B905", "UP006", "UP007", "UP035", "UP045"]

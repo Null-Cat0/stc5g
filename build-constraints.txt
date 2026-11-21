@@ -1,0 +1,5 @@
+# Build-time constraint for Ryu 4.34 (its setup.py needs setuptools <= 58), for the
+# Python 3.9 controller environment:
+#   uv venv --python 3.9 .venv-controller
+#   VIRTUAL_ENV=.venv-controller uv pip install --build-constraints build-constraints.txt -e ".[controller]"
+setuptools==58.2.0
